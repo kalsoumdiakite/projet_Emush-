@@ -9,8 +9,8 @@ package objet;
  * @author Utilisateur
  */
 public class Salle {
-    private String nomSalle;
-    private Equipement [] list_equipemet;
+   String nomSalle;
+   Equipement [] list_equipemet;
     //Objet [] espaceDeStockage
    
 }
