@@ -1,3 +1,6 @@
+
+import java.util.ArrayList;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -16,6 +19,7 @@ public class Joueur {
     private boolean estMush;
     private Competence competence1;
     private Competence competence2;
+    private ArrayList<String> inventaire = new ArrayList<>();
     
     public Joueur(String nom, int PV, int PA, int PM, int PMO, boolean estMush, Competence competence1, Competence competence2) {
         this.nom = nom;
@@ -58,5 +62,8 @@ public class Joueur {
 
     public Competence getCompetence2() {
         return competence2;
+    }
+    public ArrayList<String> getInventaire() {
+        return inventaire;
     }
 }
