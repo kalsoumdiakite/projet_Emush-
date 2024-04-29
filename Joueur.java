@@ -1,3 +1,5 @@
+package projet;
+
 
 import java.util.ArrayList;
 
@@ -19,6 +21,8 @@ public class Joueur {
     private boolean estMush;
     private Competence competence1;
     private Competence competence2;
+    private Salle   salle;//numéro Salle  dans le quel il se trouve
+    private int vaisseau;// numéro vaisseau dans le quel il se trouve 
     private ArrayList<String> inventaire = new ArrayList<>();
     
     public Joueur(String nom, int PV, int PA, int PM, int PMO, boolean estMush, Competence competence1, Competence competence2) {
@@ -31,6 +35,14 @@ public class Joueur {
         this.competence1 = competence1;
         this.competence2 = competence2;
     }
+    public Joueur(String name,Salle s,int vaisseau){
+        this.nom=name;
+        this.salle=s;
+        this.vaisseau=vaisseau;
+        
+    }
+    @Override
+    public String toString(){return this.getNom()+" dans la salle "+this.salle.getnomSalle();}
 
     public String getNom() {
         return nom;
@@ -66,4 +78,5 @@ public class Joueur {
     public ArrayList<String> getInventaire() {
         return inventaire;
     }
+    public int  getNumsalle(){return this.salle.getID();}
 }
