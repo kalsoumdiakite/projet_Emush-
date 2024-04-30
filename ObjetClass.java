@@ -49,7 +49,7 @@ public class ObjetClass {
        listeObjet.add("talki"); 
     }
    public ArrayList<String> getListeObjet() {
-       listeObjet.add(0, "Absorbeun point de degat");
+       listeObjet.add(0, "Absorbe point de degat");
        listeObjet.add(1, "Nécessaire dans l’inventaire pour réparer un equipement");
        listeObjet.add(2, "Nécessaire dans l’inventaire pour piloter sinon mort");
        listeObjet.add(3, "Nécessaire dans l'inventaire pour pas se salir");
