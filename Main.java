@@ -1,3 +1,5 @@
+package projet;
+
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -59,29 +61,41 @@ public class Main {
         competences.add(new Competence("Astrophysicien", "l’action « scanner une planète » coûte 1 PA de moins et permet de découvrir un secteur de plus par rapport à un autre joueur "));
         competences.add(new Competence("Pilote", "peut piloter un des jets d’attaque ou le vaisseau d’exploration"));
         competences.add(new Competence("Robuste", "les attaques de corps-à-corps infligent 1 point de dégât supplémentaire (- 1PV) "));
-       
+        competences.add(new Competence("Paranoïaque", "commence avec deux caméras dans son inventaire, en plus de celles présentes dans le vaisseau"));
+        competences.add(new Competence("Technicien", "peut réparer gratuitement 1'équipement par jour"));
+        competences.add(new Competence("Mycologiste", "lorsque vous soignez un équipier, il perd automatiquement un spore"));
+        competences.add(new Competence("Psy", " peut réconforter un joueur pour 1 PA ce MO "));
+        competences.add(new Competence("Informaticien", "donne 2 actions gratuites utilisables pour des projets NERON"));
+        competences.add(new Competence("Leader", "pour 2 PA, prononce un discours qui rend 2 PMO à tous les joueurs présents dans la même salle que lui"));
+        competences.add(new Competence("Concepteur", "+2 PA par jour"));
+        competences.add(new Competence("Optimiste", "perd 1 PMO de moins par jour"));
+        competences.add(new Competence("Logistique", "à chaque fin de cycle, distribue 1 PA supplémentaire à un joueur choisi au hasard dans la salle"));
+        competences.add(new Competence("Physicien", "1 action gratuite par jour pour réparer PILGRED"));
+        competences.add(new Competence("Détaché", "pas de perte de PMO lorsqu’un joueur meurt"));
+        competences.add(new Competence("Sprinter", "2 PM supplémentaires en cas de conversion d’1 PA"));
+        competences.add(new Competence("Cuistot", "peut cuisiner 4 rations par jour"));
         return competences;
     }
 
     public static ArrayList<Joueur> creerTousLesJoueurs(ArrayList<Competence> competences) {
         ArrayList<Joueur> joueurs = new ArrayList<>();
 
-        joueurs.add(new Joueur("Wang Chao", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Zhong Chun", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Eleesha Williams", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Finola Keegan", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Frieda Bergmann", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Gioele Rinaldao", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Jiang Hua", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Ian Soulton (botaniste)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Janice Kent (psychologue)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Kim Jin Su (commandant)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Lai Kuan-Ti (architecte)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Paola Rinaldo (officier)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Raluca Tomescu (génie)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Roland Zuccali (employé fedex)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Stephen Seagull (top chef)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
-        joueurs.add(new Joueur("Terrence Archer (technophile)", 14, 12, 12, 7, false, competences.get(0), competences.get(0)));
+        joueurs.add(new Joueur("Wang Chao", 14, 12, 12, 7, false, competences.get(1), competences.get(2)));
+        joueurs.add(new Joueur("Zhong Chun", 14, 12, 12, 7, false, competences.get(3), competences.get(4)));
+        joueurs.add(new Joueur("Eleesha Williams", 14, 12, 12, 7, false, competences.get(5), competences.get(6)));
+        joueurs.add(new Joueur("Finola Keegan", 14, 12, 12, 7, false, competences.get(7), competences.get(8)));
+        joueurs.add(new Joueur("Frieda Bergmann", 14, 12, 12, 7, false, competences.get(9), competences.get(10)));
+        joueurs.add(new Joueur("Gioele Rinaldao", 14, 12, 12, 7, false, competences.get(11), competences.get(12)));
+        joueurs.add(new Joueur("Jiang Hua", 14, 12, 12, 7, false, competences.get(10), competences.get(13)));
+        joueurs.add(new Joueur("Ian Soulton (botaniste)", 14, 12, 12, 7, false, competences.get(7), competences.get(14)));
+        joueurs.add(new Joueur("Janice Kent (psychologue)", 14, 12, 12, 7, false, competences.get(15), competences.get(16)));
+        joueurs.add(new Joueur("Kim Jin Su (commandant)", 14, 12, 12, 7, false, competences.get(17), competences.get(7)));
+        joueurs.add(new Joueur("Lai Kuan-Ti (architecte)", 14, 12, 12, 7, false, competences.get(18), competences.get(19)));
+        joueurs.add(new Joueur("Paola Rinaldo (officier)", 14, 12, 12, 7, false, competences.get(20), competences.get(1)));
+        joueurs.add(new Joueur("Raluca Tomescu (génie)", 14, 12, 12, 7, false, competences.get(21), competences.get(22)));
+        joueurs.add(new Joueur("Roland Zuccali (employé fedex)", 14, 12, 12, 7, false, competences.get(23), competences.get(7)));
+        joueurs.add(new Joueur("Stephen Seagull (top chef)", 14, 12, 12, 7, false, competences.get(24), competences.get(11)));
+        joueurs.add(new Joueur("Terrence Archer (technophile)", 14, 12, 12, 7, false, competences.get(14), competences.get(1)));
 
         return joueurs;
     }
