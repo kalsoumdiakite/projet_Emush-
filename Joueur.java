@@ -114,18 +114,28 @@ messages de ce canal dans la console. la gestion de la communication entre les j
     public void perdrePM(int points) {
         this.PM -= points;
     }
-    public void utiliserCompetence(Competence competence, Joueur cible) {
-        if (this.PA > 0) {
-            if (this.competence1.equals(competence) || this.competence2.equals(competence)) {
-                this.perdrePA(1);
-                System.out.println(this.nom + " la compétence " + competence.getNom() + "a été utilisé sur le joueur " + cible.getNom());
+    
+   public void utiliserCompetence(String nomCompetence, Joueur cible) {
+    switch (nomCompetence) {
+        case "Tireur":
+            if (this.inventaire.contains("blaster")) {
+                System.out.println(this.nom + " utilise la compétence Tireur.");
+                cible.perdrePV(4);
             } else {
-                System.out.println(this.nom + " pas de compétence " + competence.getNom());
+                System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
             }
-        } else {
-            System.out.println(this.nom + " : PA insuffisant");
-        }
+            break;
+        case "Bourreau":
+            if (this.PA >= 1) {
+                this.perdrePA(1);
+                cible.perdrePV(1);
+                System.out.println(this.nom + " utilise la compétence Bourreau. " + cible.getNom() + " perd 1 PV.");
+            } else {
+                System.out.println(this.nom + " : PA insuffisant");
+            }
+            break;
     }
+}
     public void Deplacer(Salle salleDestination) {
         if (salleDestination.estVoisineDe(this.salle)) {
             this.salle = salleDestination;
@@ -185,5 +195,9 @@ spore ».*/
     }
     public int  getNumsalle(){
         return this.salle.getID();
+    }
+
+    public int soignerJoueur() {
+        return this.PA;
     }
 }
