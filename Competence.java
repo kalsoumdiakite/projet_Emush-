@@ -11,10 +11,6 @@ package projet;
 public class Competence {
      private String nom;
     private String description;
-     private int DiminutionPA;
-    private int DiminutionPM;
-    private int degat;
-
     public Competence(String nom, String description) {
         this.nom = nom;
         this.description = description;
