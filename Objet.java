@@ -10,12 +10,12 @@ import java.util.ArrayList;
  *
  * @author Utilisateur
  */
-public class Objet {
+class Objet {
       private String nom;
       
-      public Objet(String nom){
+    public Objet(String nom){
           this.nom = nom ;
-      }
+    }
       public String getNom(){
       return this.nom ;}
      
@@ -53,7 +53,7 @@ public class Objet {
                  case "savon":
                      if(joueur.getInventaire().contains("savon")){ /* on doit verifier si le savon est
                          dans l'inventaire du joueur ,il aura une reduction de PA*/
-                         joueur.depenserPa(1);
+                         joueur.perdrePA(1);
                      }
                        case "couteau": // si le joueur utilise un couteau , il 2PV
                     joueur.perdrePV(2); 
@@ -77,8 +77,8 @@ public class Objet {
                     si le kit et bel bien dans l'inventaire
                     et que son PA est supperieur >= 2 pour pouvoir se soigner sinon il ne peut pas etre soigner */
                     if(joueur.getInventaire().contains("médikit")&& joueur.getPA()>=2){
-                         joueur.soignerJoueur();
-                         joueur.depenserPa(2);
+                        // joueur.soignerJoueur();
+                         joueur.perdrePA(2);
                         
                       }
                     else {
@@ -87,7 +87,7 @@ public class Objet {
                             
  
                  case "tortinette":
- 
+                       joueur.utiliserTortinette();
                  break;
                  
                  case "Souche de test de Mush":
@@ -97,8 +97,31 @@ public class Objet {
  
                  break;
                  case "chat de schrödinger":
+                     if(joueur.getInventaire().contains("chat de schrödinger")){
+                     
+                     }
+                      case "Talki":
+                     joueur.getTalkie_walkie();
  
-                 break;
+                 break; 
+                 
+                 case "Grénade":
+                     if(joueur.donnerSalle(s).presenceJoueur()){
+                          joueur.perdrePV(6);
+                     }
+                    
+                 break; 
+                  case "jet d'attaque":
+                    joueur.attaqueArme(joueur);
+                   
+                 break; 
+                 
+                 case "Exteincteur":
+                  joueur.Deplacer(salleDestinaion).eteindreIncendie();
+ 
+                 break; 
+ 
+                 
                  case "ration standard":
  
                  break;
@@ -114,32 +137,33 @@ public class Objet {
                  case "mycoscan":
  
                  break; 
-                 default: 
-                     System.out.println("dedolé cet objet n'a pas d'action ");// ou n'existe pas 
-                 break;
                  
-            }       
+                 
+                default: 
+                     System.out.println("dedolé cet objet n'a pas d'action ");// ou n'existe pas 
+        }       
     }
     else{
      System.out.println("vous ne pouvez pas utiliser cet objet");
     }
          
 }
+ 
    ArrayList<String> listeObjet= new ArrayList <>();
-  public Objet(){
+  public void Objets(){
        //Création et ajout des objets dans la liste
        listeObjet.add("Armure");
-       listeObjet.add("clé à molette");
-       listeObjet.add("combinaison");
-       listeObjet.add("paire de gan de protection");
-       listeObjet.add("savon");
-       listeObjet.add("tablier intachable");
-       listeObjet.add("tortinette");
-       listeObjet.add("éxtinteur");
-       listeObjet.add("couteau");
-       listeObjet.add("blaster");
-       listeObjet.add("grénade");
-       listeObjet.add("médikit");
+      // listeObjet.add("clé à molette"); 
+      // listeObjet.add("combinaison");
+       //listeObjet.add("paire de gan de protection");
+       //listeObjet.add("savon");
+      // listeObjet.add("tablier intachable");
+      // listeObjet.add("tortinette");
+       //listeObjet.add("éxtinteur");
+     //  listeObjet.add("couteau");
+      // listeObjet.add("blaster");
+      // listeObjet.add("grénade");
+      // listeObjet.add("médikit");
        listeObjet.add("caméra");
        listeObjet.add("souche de teste de mush");
        listeObjet.add("débris métallique");
@@ -151,28 +175,28 @@ public class Objet {
        listeObjet.add("lit");
        listeObjet.add("douche");
        listeObjet.add("jet d'exploration");
-       listeObjet.add("jet d'attaque");
+       //listeObjet.add("jet d'attaque");
        listeObjet.add("terminal de recherche");
        listeObjet.add("terminal");
        listeObjet.add("reacteur BILGRED");   
        listeObjet.add("gaz antispore");
        listeObjet.add("sérum de constipaspore");
        listeObjet.add("savon mushicide");
-       listeObjet.add("talki"); 
+       //listeObjet.add("talki"); 
     }
    public ArrayList<String> getListeObjet() {
        listeObjet.add(0, "Absorbe point de degat");
-       listeObjet.add(1, "Nécessaire dans l’inventaire pour réparer un equipement");
-       listeObjet.add(2, "Nécessaire dans l’inventaire pour piloter sinon mort");
-       listeObjet.add(3, "Nécessaire dans l'inventaire pour pas se salir");
-       listeObjet.add(4, "Côute un PA s'il est dans l'inventaire");
-       listeObjet.add(5, "Si c'est dans l'inventaire on se sali pas");
-       listeObjet.add(6, "Losrque qu'on converti PA en PM s'ajoute 2PM");
-       listeObjet.add(7, "Eteint l'incendie");
-       listeObjet.add(8, "Fait perde 2PV");
-       listeObjet.add(9, "Fait perdre 4PV");
-       listeObjet.add(10, "Fait perdre 6PV à tous les joueures de la salle");
-       listeObjet.add(11, "Doit etre dans l'inventaire pour soigner");
+      // listeObjet.add(1, "Nécessaire dans l’inventaire pour réparer un equipement");
+      // listeObjet.add(2, "Nécessaire dans l’inventaire pour piloter sinon mort");
+      // listeObjet.add(3, "Nécessaire dans l'inventaire pour pas se salir");
+      // listeObjet.add(4, "Côute un PA s'il est dans l'inventaire");
+      // listeObjet.add(5, "Si c'est dans l'inventaire on se sali pas");
+      // listeObjet.add(6, "Losrque qu'on converti PA en PM s'ajoute 2PM");
+      // listeObjet.add(7, "Eteint l'incendie");fait d'abord le 
+      // listeObjet.add(8, "Fait perde 2PV");
+      // listeObjet.add(9, "Fait perdre 4PV");
+       //listeObjet.add(10, "Fait perdre 6PV à tous les joueures de la salle");
+      // listeObjet.add(11, "Doit etre dans l'inventaire pour soigner");
        listeObjet.add(12, "Permet de voir les actions des mush et afficher les logs de la salle");
        listeObjet.add(13, "Débloque les recherches si present dans la salle");
        listeObjet.add(14, "Nécessaire pour reparer le vaisseau");
@@ -184,26 +208,15 @@ public class Objet {
        listeObjet.add(20, "Pour se reposer");
        listeObjet.add(21, "Être propre");
        listeObjet.add(22, "Permet d'explorer d'autre planete");
-       listeObjet.add(23, "Permet de se defendre des attaques ennemis");
+       //listeObjet.add(23, "Permet de se defendre des attaques ennemis");
        listeObjet.add(24, "Endroit où se fait les differents recherche");
        listeObjet.add(25, "Endroit où on peut consulter tous ce qui cincerne le vaisseau");
        listeObjet.add(26, "Réparer, ils pemettent de rentrer sur terre");
        listeObjet.add(27, "Permet de reduire le nombre d'extraction de spores à 2 par jour");
        listeObjet.add(28, "Augmente le côut de la production de spores à 2PA pour n mush");
        listeObjet.add(29, "Permet d'extraire un spore losrqu'on prend une douche avec");
-       listeObjet.add(30, "Permet de comuniquer entre les joueurs");
+      // listeObjet.add(30, "Permet de comuniquer entre les joueurs");
         return listeObjet;
     }
- 
-     
-  
- 
- 
- 
- }
-
-   
     
-    
-    
-
+}
