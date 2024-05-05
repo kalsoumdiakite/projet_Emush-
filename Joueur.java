@@ -115,15 +115,17 @@ messages de ce canal dans la console. la gestion de la communication entre les j
     public void perdrePM(int points) {
         this.PM -= points;
     }
-    public void utiliserCompetence(String nomCompetence, Joueur cible) {
+    public void utiliserCompetence(String nomCompetence, Joueur cible, ArrayList<Joueur> joueurs) {
     switch (nomCompetence) {
         case "Tireur":
-            if (this.inventaire.contains("blaster")) {
-                System.out.println(this.nom + " utilise la compétence Tireur.");
-                tirer(cible);
-                tirer(cible);
-            } else {
-                System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
+            for(int jour = 1; jour <= 30;jour++){
+                if (this.inventaire.contains("blaster")) {
+                    System.out.println(this.nom + " utilise la compétence Tireur.");
+                    tirer(cible);
+                    tirer(cible);
+                } else {
+                    System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
+                }
             }
             break;
         case "Bourreau":
@@ -140,7 +142,11 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Infirmier":
             System.out.println(this.nom + " utilise la compétence Infirmier.");
-            soigner(cible);
+            for(int jour = 1; jour <= 30; jour++){
+                for(Joueur joueur : joueurs){
+                    joueur.recupererPV(4);
+                }
+            }
             break;
         case "Traqueur":
             System.out.println(this.nom + " utilise la compétence Traqueur.");
@@ -173,6 +179,8 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Sprinter":
             System.out.println(this.nom + " utilise la compétence Sprinter.");
+            this.conversionPA_PM();
+            this.PM = this.PM + 2;
             break;
         case "Psy":
             System.out.println(this.nom + " utilise la compétence Psy");
@@ -181,6 +189,29 @@ messages de ce canal dans la console. la gestion de la communication entre les j
         case "Leader":
             System.out.println(this.nom + " utilise la compétence Leader");
             this.perdrePA(2);
+            for (Joueur joueur : joueurs) {
+                if (joueur.salle.getnomSalle().equals(this.salle.getnomSalle())) {
+                    joueur.PMO = joueur.PMO + 2;
+                }
+            }
+            break;
+        case "Concepteur":
+            System.out.println(this.nom + " utilise la compétence Concepteur");
+            for (int jour = 1; jour <= 30 ;jour++){
+                this.PA = this.PA + 2;
+            }
+            break;
+        case "Optimiste":
+            System.out.println(this.nom + " utilise la compétence Optimiste");
+            for (int jour = 1; jour <= 30; jour++){
+                this.PMO -= this.PMO;
+            }
+            break;
+        case "Technicien":
+            System.out.println(this.nom + " utilise la compétence Technicien");
+            break;
+        case "Mycologiste":
+            System.out.println(this.nom + " a utilisé la compétence Mycologiste");
         default:
             System.out.println("Compétence inconnue.");
             break;
@@ -189,10 +220,6 @@ messages de ce canal dans la console. la gestion de la communication entre les j
 public void tirer(Joueur cible) {
     cible.perdrePV(4);
 }
-public void soigner(Joueur cible){
-    this.PV = this.PV + 4;
-}
-
     public void Deplacer(Salle salleDestination) {
         if (salleDestination.estVoisineDe(this.salle)) {
             this.salle = salleDestination;
@@ -253,9 +280,59 @@ spore ».*/
     public int  getNumsalle(){
         return this.salle.getID();
     }
-
-    public void soignerJoueur(Joueur cible) {
-        this.PV = 14;
-        this.PA = this.PA - 2;
+    public void recupererPV(int points) {  // quand le joueur perd des PV 
+        
+        if (this.PV >14) {
+            System.out.println("le nombre maximum de PV est de 14");
+        }
+        else {this.PV += points;}
     }
+      
+      
+         public void recupererPMO(int points) {  // quand le joueur perd des PV 
+        
+        if (this.PMO >14) {
+            System.out.println("le nombre maximum de PMO est de 14");
+        }
+        else {this.PMO += points;}
+    }
+         
+         
+    public void recupererPA(int points) {  // quand le joueur perd des PA
+        if (this.PA>12){System.out.println("le nombre maxiamum de PA est de 12");}
+        else{
+        this.PA += points;}
+    }
+    
+    
+    public void recupererPM(int points) { // quand le joueur perd des PO
+                if (this.PM>12){System.out.println("le nombre maxiamum de PM est de 12");}
+        else{
+        this.PM += points;}
+    }
+    
+    
+      public void gestionDesPoints(){// cette methode permet de calculer les PA PM PMO PV  a chaque nouvel cycle
+          for (int cycle=1;cycle<=8;cycle++){
+          this.recupererPA(1); //A chaque cycle, chaque joueur récupère 1 PA
+          this.recupererPM(1); //A chaque cycle, chaque joueur récupère 1 PM.
+          while(this.PMO==0){this.perdrePV(1);}//Si le nombre de PMO tombe à zéro, le joueur perd 1 PV par cycle tant qu’il a 0 PMO
+           if (this.PV <= 0) {
+            System.out.println(this.nom + " est mort"); //Si le nombre de PV tombe à zéro, le joueur meurt.
+        }
+          }
+     
+      }
+      
+      
+      public void conversionPA_PM(){if(this.PM==0){this.recupererPA(1);
+       this.recupererPM(2);//Si un joueur est à court de PM, il peut utiliser 1 PA pour récupérer 2 PM.
+      }}
+  /*  public String  destination(){
+        String texte ;
+        System.out.println("Ou voudriez-vous aller?");
+        texte= sc.nextLine();
+        return texte;
+        
+    }*/
 }
