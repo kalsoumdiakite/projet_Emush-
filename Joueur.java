@@ -1,3 +1,4 @@
+
 package projet;
 
 
@@ -114,13 +115,13 @@ messages de ce canal dans la console. la gestion de la communication entre les j
     public void perdrePM(int points) {
         this.PM -= points;
     }
-    
-   public void utiliserCompetence(String nomCompetence, Joueur cible) {
+    public void utiliserCompetence(String nomCompetence, Joueur cible) {
     switch (nomCompetence) {
         case "Tireur":
             if (this.inventaire.contains("blaster")) {
                 System.out.println(this.nom + " utilise la compétence Tireur.");
-                cible.perdrePV(4);
+                tirer(cible);
+                tirer(cible);
             } else {
                 System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
             }
@@ -129,13 +130,71 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             if (this.PA >= 1) {
                 this.perdrePA(1);
                 cible.perdrePV(1);
-                System.out.println(this.nom + " utilise la compétence Bourreau. " + cible.getNom() + " perd 1 PV.");
+                System.out.println(this.nom + " utilise la compétence Bourreau.");
+                
             } else {
                 System.out.println(this.nom + " : PA insuffisant");
             }
             break;
+        case "Seul espoir":
+            break;
+        case "Infirmier":
+            System.out.println(this.nom + " utilise la compétence Infirmier.");
+            soigner(cible);
+            break;
+        case "Traqueur":
+            System.out.println(this.nom + " utilise la compétence Traqueur.");
+            break;
+        case "Observateur":
+            System.out.println(this.nom + " utilise la compétence Observateur.");
+            // Action spécifique pour la compétence "Observateur"
+            break;
+        case "Biologiste":
+            System.out.println(this.nom + " utilise la compétence Biologiste.");
+            // Action spécifique pour la compétence "Biologiste"
+            break;
+        case "Astrophysicien":
+            System.out.println(this.nom + " utilise la compétence Astrophysicien.");
+            break;
+            case "Paranoïaque":
+            System.out.println(this.nom + " utilise la compétence Paranoïaque.");
+            break;
+        case "Pilote":
+            System.out.println(this.nom + " utilise la compétence Pilote.");
+            break;
+        case "Robuste":
+            System.out.println(this.nom + " utilise la compétence Robuste.");
+            attaqueMainNue(cible);
+            cible.perdrePV(1);
+            break;
+        case "Physicien":
+            System.out.println(this.nom + " utilise la compétence Physicien.");
+            break;
+        case "Détaché":
+            System.out.println(this.nom + " utilise la compétence Détaché.");
+            break;
+        case "Sprinter":
+            System.out.println(this.nom + " utilise la compétence Sprinter.");
+            break;
+        case "Psy":
+            System.out.println(this.nom + " utilise la compétence Psy");
+            cible.perdrePA(1);
+            cible.PMO = cible.PMO + 2;
+        case "Leader":
+            System.out.println(this.nom + " utilise la compétence Leader");
+            this.perdrePA(2);
+        default:
+            System.out.println("Compétence inconnue.");
+            break;
     }
 }
+public void tirer(Joueur cible) {
+    cible.perdrePV(4);
+}
+public void soigner(Joueur cible){
+    this.PV = this.PV + 4;
+}
+
     public void Deplacer(Salle salleDestination) {
         if (salleDestination.estVoisineDe(this.salle)) {
             this.salle = salleDestination;
@@ -197,7 +256,8 @@ spore ».*/
         return this.salle.getID();
     }
 
-    public int soignerJoueur() {
-        return this.PA;
+    public void soignerJoueur(Joueur cible) {
+        this.PV = 14;
+        this.PA = this.PA - 2;
     }
 }
