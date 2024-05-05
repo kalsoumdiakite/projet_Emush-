@@ -147,11 +147,9 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Observateur":
             System.out.println(this.nom + " utilise la compétence Observateur.");
-            // Action spécifique pour la compétence "Observateur"
             break;
         case "Biologiste":
             System.out.println(this.nom + " utilise la compétence Biologiste.");
-            // Action spécifique pour la compétence "Biologiste"
             break;
         case "Astrophysicien":
             System.out.println(this.nom + " utilise la compétence Astrophysicien.");
