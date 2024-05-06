@@ -394,6 +394,10 @@ spore ».*/
     public void Fouiller(Joueur j, Salle s){
         if(j.presenceJoueur){j.perdrePA(2);}
     }
+    
+    public void VoirObjetCacher(Joueur j, Salle s){
+        if(j.presenceJoueur(j)){j.perdrePA(0);}
+    }
     private String Date(long currentTimeMillis) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
