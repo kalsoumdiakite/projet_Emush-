@@ -5,70 +5,75 @@
 package Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  *
  * @author Utilisateur
  */
 public class NewSalle {
-     // les actions doivent etre coodees comme des fontions ou methode dans jeu en mettantb en exergue les PA , PMO PO PV qu'elles permettent de gagner ou perdre 
-    // code  NewSalle 
-    private int point_armure;
-    private  int point_oxygene ;
-    private  int point_fuel ;
-    private final int IDVaisseau =(int)(Math.random()*200) ;
-    private HashSet<Salle> salles = new HashSet<>();
-   // Salle dortoir , baie_Alpha , baie_Beta, baie_Icarus , laboratoire,salle_Moteur,pont ,nexus ,espaceDeStockage, refectoire ;
- 
- public NewSalle (){
-   this.point_armure= 200;
-   this.point_oxygene=500;
-   this.point_fuel=50;
+     private  String nomSalle ;
+     private int identifiant ;
+     private  int  vaisseau;
+     private boolean incendie;
+  private  ArrayList <String> SalleVoisines = new ArrayList<>(); 
+   private  ArrayList<String> list_equipement;
+   private ArrayList<Objet> espace_de_stockage;// espace de stockage d'une salle 
+   private ArrayList<Personne> listeJoueur = new ArrayList<>();// liste des joueurs présents dans une salle 
+    /*Objet[] espaceDeStockage;Chaque salle est équipée d’un espace de stockage dans lequel différents objets sont
+entreposés. Les joueurs ont la possibilité de regarder les items présents dans un espace de
+stockage dès lors qu’ils sont physiquement présents dans la salle correspondante. Ils peuvent
+y déposer des objets ou en prendre pour les mettre dans leur inventaire personnel*/
    
-   
- }
-
- public void init (String[]nomSalle,boolean[][]portes){
-     for (int i=0;i<nomSalle.length;i++){
-         Salle s = new Salle(nomSalle[i],i+10,this.IDVaisseau);
-         salles.add(s);
-       for(int j=0;j<portes[i].length;j++){if (portes[i][j] && i!=j){s.getSalleVoisines().add(nomSalle[j]);}}
-     }
+    public NewSalle (String nom,int id,int v, boolean inc ){
+     this.nomSalle=nom;
      
- }
-    @Override
-  public String toString(){
-      
-      String text = "";
-      for (Salle s :salles ){text =text + s.getnomSalle() +", id:"+ String.valueOf(s.getID())+", salles voisines[ "+afficher(s.getSalleVoisines())+"]\n";}
-      return text;
-    }
-  public String  afficher (ArrayList<String>tab){
+    this.identifiant=id;
+    this.vaisseau=v;
+    this.incendie = false; }
+
+    
+    public  void ajouSalle (NewSalle s) {if(s instanceof NewSalle){this.SalleVoisines.add(s.nomSalle);}}
+    public String getnomSalle (){return this.nomSalle;}
+     public int getID  (){return this.identifiant;}
+      public  ArrayList <String> getSalleVoisines (){return this.SalleVoisines;}
+      public boolean estVoisineDe (NewSalle s){ return this.SalleVoisines.contains(s.getnomSalle());}
+   @Override
+      public String toString(){ return this.nomSalle +", id:"+ String.valueOf(this.identifiant)+", salles voisines["+afficher(this.SalleVoisines)+"]";}
+      public String  afficher (ArrayList<String>tab){
           String text ="";
        for (String tab1 : tab) {
            text= text +", "+  tab1;
        }
        return text;
       }
-  public int getIDVaisseau(){return this.IDVaisseau;}
-  public HashSet<Salle> getsalles(){return this.salles;}
- /* Ajoutez deux méthodes getSalle et getTaille dans la classe NewSalle. La première méthode
-prend en paramètre un numéro de salle et retourne la salle correspondante. La deuxième
-méthode retourne le nombre de salles dans le NewSalle. */
- public void journaldeBoard(){
-     /* Le Daedalus dispose d’un journal de bord pour afficher la liste des joueurs présents dans les
-pièces où il y a une caméra installée, afficher les incendies en cours et la liste des équipements
-endommagés.... */
-     System.out.println("Journal de bord du vaisseau:/n");
-     for (Salle s:salles){if (s.getStockage().contains("caméra")){s.afficherList();}}// affiche la liste des joueurs présent dans les salles qui contiennent des caméras 
-     System.out.println("Etat du vaisseau "+ this.point_armure+", "+this.point_fuel+", "+this.point_oxygene+", ");// etat du NewSalle 
- }
- public void misJourEtatvaisseau(){}
-  public void canalDeCommunication(){}
-    /* Tous les personnages disposent d’un talkiewalkie pour échanger des messages sur un canal commun à tous. Les personnages mush
-peuvent aussi communiquer entre eux par télépathie. Vous ferez donc en sorte que les joueurs
-humains puissent ajouter des messages sur le canal commun ou consulter les 10 derniers
-messages de ce canal dans la console. la gestion de la communication entre les joueurs, notamment la messagerie sur le canal commun et les canaux de communication spécifiques aux mushs.*/
+      public boolean presenceJoueur(Personne j){
+       return j.getNumsalle()==this.identifiant;
+      }
+     public void ajouterJoueur(Personne J){
+         
+         if (this.presenceJoueur(J)){this.listeJoueur.add(J);}
+    
+     }
+     public void  afficherList () {for (Personne j :this.listeJoueur ){System.out.println(j.toString()+" ");}}
+     public ArrayList<Objet> getStockage() {return this.espace_de_stockage;} 
+      public ArrayList<Personne> getlisteJoueur() {return this.listeJoueur;} 
+      
+    public void remplirEquipement(){
+    if(this.nomSalle.equals("Pont")){this.list_equipement.add("terminal");
+    this.list_equipement.add("systéme de naviguation");}
+     if(this.nomSalle.equals("Labo de recherche")){this.list_equipement.add("terminal");
+   }
+      if(this.nomSalle.equals("Pont")){this.list_equipement.add("terminal");
+    this.list_equipement.add("systéme de naviguation");}
+       if(this.nomSalle.equals("nexus")){this.list_equipement.add("neron");
+       }
+    }
+public void eteindreIncendie( boolean incendi){
+   if(incendi){
+   this.incendie = true;
+   System.out.println("il ya une incendis dans"+this.nomSalle);}
+}
+   
+
     
 }
