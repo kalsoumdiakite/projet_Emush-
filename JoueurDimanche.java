@@ -299,7 +299,7 @@ spore ».*/
     public void Réparer(Joueur j, equipement p){
         String rep="Oui";
         System.out.println("Voulez-vous reparer cette equiepement ?");
-        if(rep.equals("Oui")){ j.perdrePA(1);}
+        if(rep.equals("Oui")&& p.equipement){ j.perdrePA(1); System.out.println("Equipement reparer");}
     }
     
     public void ReparerPilgred(Salle s, Joueur j){
