@@ -1,14 +1,11 @@
-
-package projet;
-
-
-import java.util.ArrayList;
-import java.util.Scanner;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package Test;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -545,11 +542,62 @@ spore ».*/
     }
     public int getNombreJoueurs() {
     int nombreJoueurs = 0;
-    for (Joueur joueur : this.salle.getlisteJoueur()) {
+    for(Joueur joueur : this.salle.getlisteJoueur()) {
         if (!joueur.equals(this)) {
             nombreJoueurs++;
         }
     }
     return nombreJoueurs;
 }
+    
+    
+    public void lencerExpedition(Salle s , boolean planetOrb ){
+       if(this.planetOrb){ // pour verifier si la planete est en orbitre
+            if(s.getnomSalle().equals("Baie Icarus") && this.competence.equals("pilote")&&this.PA>=2){
+            System.out.println("lencez l'expedition depuis la bai_Iacurus");
+            this.perdrePA(3);
+        }
+       }
+       else{
+       System.out.println("la planete n'est pas en orbite");
+       }
+    }
+    
+    public void reparerPilgred(Salle s){
+     if(this.PA>=3 && s.getNomsalle().equals("Salles des moteurs")){ //si le j est dans la salle des moteurs et a assez de pa
+         
+        int random = (int)(Math.random()*100);
+        if(random >=10){//verifier si la tentative de reparer le pilgred est <= 10
+        System.out.println("vous avez la chance de reparer le pilgred");}
+         this.perdrePA(3);
+     
+      }
+     else{
+         System.out.println("vous n'etes pas dans la salle des moteurs");
+     }
+    
+    }
+     /*j'ai mis en paramettre objet pour voir si le joueur est dans une tourelle avec l'objet jet d'attaque */
+       public void attaquerVaisseau(Salle s ,Objet objet){
+           if(s.getNomsalle.equals("Tourelle")&& objet.equals("jet d'attaque")) {
+               System.out.println("Attaque le vaisseau");
+               this.perdrePA(1);
+           }         
+           }
+       
+    public void rentrerSurTer( Salle s){
+   
+        if(s.getnomSalle().equals("pont")&& this.competence.equals("pilote") ){
+            System.out.println("vous pouvez entrer sur terre");
+        this.perdrePA(5);
+        }
+        
+    }
+     public void detecterPlanetProximite(){
+         if(this.salle.getnomSalle().equals("pont")&& this.PA>=2){ // on va verifier d'abord si le joueur est au pont et a suffisement de pa
+
+     } 
+    }
+     
 }
+
