@@ -22,24 +22,24 @@ public class Joueur {
     private int PM;
     private int PMO;
     private boolean estMush;
-    private Competence competence1;
-    private Competence competence2;
+    private int nbrSpore;
+    private String[] competence;
     private Salle salle;
     private int vaisseau;
+    private boolean spore;
     private ArrayList<String> inventaire = new ArrayList<>();
     private String talkie_walkie= sc.nextLine() ;
     private ArrayList<String> canalHumain;
     private ArrayList<String> canalMush;
     
-    public Joueur(String nom, int PV, int PA, int PM, int PMO, boolean estMush, Competence competence1, Competence competence2) {
+    public Joueur(String nom, int PV, int PA, int PM, int PMO, boolean estMush, String[] competence) {
         this.nom = nom;
         this.PV = PV;
         this.PA = PA;
         this.PM = PM;
         this.PMO = PMO;
         this.estMush = estMush;
-        this.competence1 = competence1;
-        this.competence2 = competence2;
+        this.competence = competence;
     }
     public Joueur(String name,Salle s,int vaisseau){
         this.nom=name;
@@ -150,18 +150,24 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Traqueur":
             System.out.println(this.nom + " utilise la compétence Traqueur.");
+            
             break;
         case "Observateur":
             System.out.println(this.nom + " utilise la compétence Observateur.");
             break;
         case "Biologiste":
             System.out.println(this.nom + " utilise la compétence Biologiste.");
+            
             break;
         case "Astrophysicien":
             System.out.println(this.nom + " utilise la compétence Astrophysicien.");
+            this.ScannerPlanete();
+            this.PA += this.PA;
+            System.out.println("Vous avez découvert un secteur de plus");
             break;
             case "Paranoïaque":
             System.out.println(this.nom + " utilise la compétence Paranoïaque.");
+            
             break;
         case "Pilote":
             System.out.println(this.nom + " utilise la compétence Pilote.");
@@ -209,13 +215,31 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Technicien":
             System.out.println(this.nom + " utilise la compétence Technicien");
+            
             break;
         case "Mycologiste":
             System.out.println(this.nom + " a utilisé la compétence Mycologiste");
+            this.soignerEquipier(cible);
+            perdreSpore(1, cible);
         default:
             System.out.println("Compétence inconnue.");
             break;
     }
+}
+public void soignerEquipier(Joueur cible) {
+    if (this.PA >= 2) {
+        this.perdrePA(2);
+        cible.recupererPV(4);
+        System.out.println(this.nom + " soigne " + cible.getNom() + ".");
+    } else {
+        System.out.println(this.nom + " : PA insuffisant");
+    }
+}
+public void perdreSpore(int point,Joueur cible){
+    int nombreSpore = 0;
+    if (cible.estMush()) {
+            nombreSpore = nombreSpore - point;
+        }
 }
 public void tirer(Joueur cible) {
     cible.perdrePV(4);
@@ -266,13 +290,11 @@ spore ».*/
     public boolean estMush() {
         return estMush;
     }
-    
-     public Competence getCompetence1() {
-        return competence1;
+    public String[] getCompetences(){
+        return competence;
     }
-
-    public Competence getCompetence2() {
-        return competence2;
+    public void setCompetences(String[] competences) {
+        this.competence = competences;
     }
     public ArrayList<String> getInventaire() {
         return inventaire;
@@ -335,4 +357,199 @@ spore ».*/
         return texte;
         
     }*/
+       public void CarresserChat(Joueur j){
+         if(j.getInventaire().contains("chat de schrödinger")){
+             j.perdrePA(1);
+         }else{ j.perdrePA(0);}
+     }
+    
+     public void Fouiller(Joueur j){}
+    
+    public void SeCoucher(Joueur j, Salle s){
+        if(s.getnomSalle().equals("Dortoire")){
+            j.perdrePA(0);
+        } else{ System.out.println("Vous ne pouvez pas dormir ici");}
+    }
+    
+    public void SeLever(Joueur j, Salle s){
+        j.perdrePA(0);
+    }
+    
+    
+    public void Réparer(Joueur j){
+        String rep="Oui";
+        System.out.println("Voulez-vous reparer cette equiepement ?");
+        if(rep.equals("Oui")){ j.perdrePA(1);}
+    }
+    
+    public void ReparerPilgred(Salle s, Joueur j){
+        if(s.getnomSalle().equals("Moteurs")){
+            j.perdrePA(3);
+        }
+    }
+    
+    public void Sedoucher(Joueur j){
+        if(j.estMush){ j.perdrePA(2); j.perdrePV(3);}
+        else{ j.perdrePA(2);}
+    }
+    
+    public void MettreCam(Joueur j, Salle s){
+        System.out.println("Voulez-vous mettre cette salle sous surveillance ?");
+        String rep="Oui";
+        if(rep.equals("Oui")){ j.perdrePA(4);}
+        else{ j.perdrePA(0);}
+    }
+    
+    public void RechercheLabo(Joueur j, Salle s){
+        if(s.getnomSalle().equals("Laboratoire")){ j.perdrePA(2);}
+    }
+    
+    public void ChangerDeSalle(Joueur j, Salle s, Salle n){
+        if(s.estVoisineDe(n)){ j.perdrePA(1);}
+    }
+    
+    public void Attaquer(Joueur joueur, Joueur joueurcible){
+         if(this.PA>2){
+             joueur.perdrePA(2);
+             joueurcible.perdrePV(1);
+         }/* Si un joueur attauqe un autre joueur a main nu le joueur perd 2PA et l'autre un pv*/
+    }
+     
+     public void AttaqueCouteau(Joueur j, Joueur cible){
+         if(j.inventaire.contains("Couteau")){
+             cible.perdrePV(2);
+         }/*Le joueur qui s'est fait attaquer perd 2PV*/
+     }
+    
+     public void ScannerPlanet(Salle s, Joueur j){
+         if(s.getnomSalle().equals("Pont")){
+             j.perdrePA(2);
+         }
+     }
+    
+     public void CreerSpore(Joueur j,Salle s){
+         int nbr=0;
+        if (this.estMush() && this.salle.getNombreJoueurs() == 1) {
+        this.spore = true;
+        nbr += nbr;
+        System.out.println(this.nom + " a créé un spore.");
+    } else {
+        System.out.println("Conditions non remplies pour créer un spore.");
+    }
+    }
+    
+     public void Poinçonner(Joueur ciblej){
+        if(!ciblej.estMush && this.nbrSpore>0){
+            ciblej.RecevoirSpore();
+             /*il créé un spore*/
+            System.out.println("Vous avez poiçonner le joueur"+ ciblej);
+        } if(this.nbrSpore==0){System.out.println("Vous n'avez plus de spore");}
+    }
+    
+    private void RecevoirSpore(){ }
+    
+    public void InfecterRation(Joueur j){
+        if(j.estMush){
+        j.perdrePA(1);}
+    }
+    
+    public void MangerSpore(Joueur j){ j.perdrePA(1); j.recupererPA(3); j.recupererPM(2);}
+    
+    public void Tirer(Joueur j, Joueur cible){
+        if(j.inventaire.contains("Blaster")){
+             cible.perdrePA(4);
+        }/* Si le joueur utilise un couteau ou un blaster il perd un pa*/
+    }
+    public void Cacher(Joueur j){
+        System.out.println("Voulez-vous cacher cette objet");
+        String rep="Oui";
+        if(rep.equals("Oui")){
+            j.perdrePA(1);
+            System.out.println("Vous avez cacher l'objet");
+        }
+    }
+    public void PrendreObjet(Joueur j){
+        System.out.println("Voulez_vous prendre cette objet");
+        String rep="Oui";
+        if(rep.equals("Oui")){
+            j.perdrePA(0);
+            System.out.println("Vous avez pris l'objet il se trouve maintenant dans votre inventaire");
+        }
+    }
+    public void Fouiller(Joueur j, Salle s){
+        if(presenceJoueur(j)){j.perdrePA(2);}
+    }
+    
+    public void VoirObjetCacher(Joueur j, Salle s){
+        if(j.presenceJoueur(j)){j.perdrePA(0);}
+    }
+      public void Saboter(int PA, Joueur joueur){
+        System.out.println("Voulez-vous saboter cette équipement");
+        joueur.perdrePA(0);
+        String rep="Oui";
+        if( joueur.estMush){
+            if(rep.equals("Oui")){
+                joueur.perdrePA(3);
+                System.out.println("Equipement saboter");
+            }
+        }    
+    }
+        
+    public void ConsulterJournaldeBoard(Joueur j){
+        if(!this.estMush()){
+            
+        }
+        else{}
+    }
+    
+     public void eleesha(Joueur joueur){
+         if(this.equals("Eleesha")){
+             System.out.println("Voulez vous consulter les entrées et sorties de cette salle");
+             String rep="Oui";
+             if(rep.equals("Oui")){
+                 joueur.perdrePA(1);
+             } else {}
+         }
+     }
+    public void AttaqueAllienne(Salle s, Joueur j){
+        if(s.getnomSalle().equals("Tourelle")|| s.getnomSalle().equals("baie")){
+            j.perdrePA(1);
+        }
+        else{
+            System.out.println("Vous devez vous trouvez dans une salle ");
+        }
+        
+    }
+    public void ScannerPlanete(){
+        if(this.salle.getnomSalle().equals("pont")&& this.PA>=3){// on verifie si le j es sur le pont et a assez de pa;
+            
+              
+              int s = (int)(Math.random()*3); //random , ici on choisi 1 secteur de la planete à scanner de façon aleatoir
+              int qtiteDeRessource = (int) (Math.random()*26);//e la quantité de ressources disponibles dans un des secteurs non scaner et choisi aleatoirement 
+                switch(s){
+                   case  1: 
+                     System.out.println("scane oxygne"+qtiteDeRessource+"unité");
+                   break;
+                   case  2 : 
+                     System.out.println("scane fuel"+qtiteDeRessource+"unité");
+                   break;
+                   case  3 : 
+                     System.out.println("scane débris métallique"+qtiteDeRessource+"unité");
+                   break;
+        }
+          this.perdrePA(3);//le joueur perd alors 3pa
+    }
+     }
+    private boolean presenceJoueur(Joueur j) {
+        return j.getNumsalle()==salle.getID();
+    }
+    public int getNombreJoueurs() {
+    int nombreJoueurs = 0;
+    for (Joueur joueur : this.salle.getlisteJoueur()) {
+        if (!joueur.equals(this)) {
+            nombreJoueurs++;
+        }
+    }
+    return nombreJoueurs;
+}
 }
