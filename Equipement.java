@@ -22,4 +22,16 @@ public class EquipementMardi {
             }
         }
     }
+    public void ReparerPilgred(Salle s, Joueur j, EquipementMardi p){
+        System.out.println("Voulez-vous reparer PILGRED ??");
+        String rep="Oui";
+        if(rep.equals("Oui")){
+            if(s.nomSalle.equals("Moteurs") && j.PA>3){
+                if(p.nomEquipement.equals("PILGRED")){
+                    j.perdrePA(3);
+                   
+                }
+            }    
+        }    
+    }
 }
