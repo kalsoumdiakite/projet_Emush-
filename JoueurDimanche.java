@@ -302,12 +302,6 @@ spore ».*/
         if(rep.equals("Oui")&& p.equipement){ j.perdrePA(1); System.out.println("Equipement reparer");}
     }
     
-    public void ReparerPilgred(Salle s, Joueur j){
-        if(s.nomSalle.equals("Moteurs")){
-            j.perdrePA(3);
-        }
-    }
-    
     public void Sedoucher(Joueur j){
         if(j.estMush){ j.perdrePA(2); j.perdrePV(3);}
         else{ j.perdrePA(2);}
@@ -397,6 +391,22 @@ spore ».*/
     
     public void VoirObjetCacher(Joueur j, Salle s){
         if(j.presenceJoueur(j)){j.perdrePA(0);}
+    }
+    public void FinJeu(Joueur j){
+        if(cycle==8){
+            System.out.println("Nous sommes le dernier jour");
+            if(nbMush < 2 && nonMush.size() > 0){
+                System.out.println("Vous avez gagner la partie et sauver la terre");
+            }
+            else{System.out.println("Vous avez perdu la partie");}
+        }
+    }
+    public void Defaite(){
+        if(cycle>2 ){
+            if(nbMush>1 && nonMush.size()<1){
+                System.out.println("Vous avez echouer à votre mission");
+            }
+        }
     }
     private String Date(long currentTimeMillis) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
