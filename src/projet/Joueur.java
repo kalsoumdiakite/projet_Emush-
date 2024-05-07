@@ -22,18 +22,20 @@ public class Joueur {
     private int PM;
     private int PMO;
     private boolean estMush;
-    private Competence [] competences; // tableau des deux competences 
+    private String [] competences; // tableau des deux competences 
     private Objets [] inventaire = new Objets [3];
     private Salle   salle;// Salle  dans le quel il se trouve
     private int vaisseau;// numéro vaisseau dans le quel il se trouve 
     private String talkie_walkie= sc.nextLine() ;
     private ArrayList<String> canalHumain; // canal des huamins 
     private ArrayList<String> canalMush;
+    private ArrayList<String> historiqueDeplacement;
+    private boolean propre;// permet de dire si le joueur est propre ou pas 
       
 
 
     
-    public Joueur(String nom, Competence [] compt) {
+    public Joueur(String nom, String [] compt) {
         this.nom = nom;
         this.PV = 14;
         this.PA = 12;
@@ -83,18 +85,21 @@ spore ».*/
         return estMush;
     }
     
-     public Competence [] getCompetences() {
+     public String [] getCompetences() {
         return competences;
     }
-      public Competence  getCompetence(int i) {
+      public String  getCompetence(int i) {
           
         return competences[i];
     }
-
-    
+      public ArrayList<String> getHistorique(){ return this.historiqueDeplacement;}
+ public  Objets [] getInventaire(){ return this.inventaire;}
+ 
+ public boolean getpropre(){ return this.propre;}
+    public void propre(){ this.propre=true;} // le joueur est propre avec cette methode 
     
     public int  getNumsalle(){return this.salle.getID();} // retourne l'identifiant de la salle ou se trouve le joueur 
-    
+    public Salle getSalle(){ return this.salle;}
     
    public String getTalkie_walkie(){
        String message;
@@ -103,7 +108,13 @@ spore ».*/
       } 
        else{message="les mushs ne possedent pas de talkie-walkie";}
        return message;}
-   public void ajouterObjet(Objets obj){for(int i=0;i<this.inventaire.length;i++){if(this.inventaire[i]==null){this.inventaire[i]=obj;}
+   
+   
+   public void ajouterObjet(Objets obj){for(int i=0;i<this.inventaire.length;i++){if(this.inventaire[i]==null){
+       if(obj!=null){this.inventaire[i]=obj;
+       return;}
+       else{System.out.println("Objet à ajouter est null ");}
+   }
    else {System.out.println("impossible d'ajouter l'objet");}}}
    
    
@@ -221,7 +232,7 @@ spore ».*/
       }
       
       
-      public void conversionPA_PM(){if(this.PM==0){this.recupererPA(1);
+      public void conversionPA_PM(){if(this.PM==0){this.perdrePA(1);
        this.recupererPM(2);//Si un joueur est à court de PM, il peut utiliser 1 PA pour récupérer 2 PM.
       }}
   /*  public String  destination(){
@@ -239,6 +250,7 @@ spore ».*/
         if (salleDestination.estVoisineDe(this.salle)) {
             this.salle = salleDestination;
             this.perdrePM(1);
+            this.historiqueDeplacement.add(this.nom+" se deplace à la salle "+salleDestination.getnomSalle()+" à "+ Date(System.currentTimeMillis()));
         }}
          
     }
@@ -246,7 +258,131 @@ spore ».*/
 
     private String Date(long currentTimeMillis) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }    public void utiliserCompetence(String nomCompetence, Joueur cible, ArrayList<Joueur> joueurs) {
+    switch (nomCompetence) {
+        case "Tireur":
+            for(Objets o :this.getInventaire()){if(o.getNom().equals("Blaster")) {
+                    System.out.println(this.nom + " utilise la compétence Tireur.");
+                    tirer(cible);
+                    tirer(cible);
+                } else {
+                    System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
+                }
+            }
+            break;
+        case "Bourreau":
+            if (this.PA >= 1) {
+                this.perdrePA(1);
+                cible.perdrePV(1);
+                System.out.println(this.nom + " utilise la compétence Bourreau.");
+                
+            } else {
+                System.out.println(this.nom + " : PA insuffisant");
+            }
+            break;
+        case "Seul espoir":
+            break;
+        case "Infirmier":
+            System.out.println(this.nom + " utilise la compétence Infirmier.");
+            for(int jour = 1; jour <= 30; jour++){
+                for(Joueur joueur : joueurs){
+                    joueur.recupererPV(4);
+                }
+            }
+            break;
+        case "Traqueur":
+            System.out.println(this.nom + " utilise la compétence Traqueur.");
+            break;
+        case "Observateur":
+            System.out.println(this.nom + " utilise la compétence Observateur.");
+            break;
+        case "Biologiste":
+            System.out.println(this.nom + " utilise la compétence Biologiste.");
+            break;
+        case "Astrophysicien":
+            System.out.println(this.nom + " utilise la compétence Astrophysicien.");
+            break;
+            case "Paranoïaque":
+            System.out.println(this.nom + " utilise la compétence Paranoïaque.");
+            break;
+        case "Pilote":
+            System.out.println(this.nom + " utilise la compétence Pilote.");
+            break;
+        case "Robuste":
+            System.out.println(this.nom + " utilise la compétence Robuste.");
+            attaqueMainNue(cible);
+            cible.perdrePV(1);
+            break;
+        case "Physicien":
+            System.out.println(this.nom + " utilise la compétence Physicien.");
+            break;
+        case "Détaché":
+            System.out.println(this.nom + " utilise la compétence Détaché.");
+            break;
+        case "Sprinter":
+            System.out.println(this.nom + " utilise la compétence Sprinter.");
+            this.conversionPA_PM();
+            this.PM = this.PM + 2;
+            break;
+        case "Psy":
+            System.out.println(this.nom + " utilise la compétence Psy");
+            cible.perdrePA(1);
+            cible.PMO = cible.PMO + 2;
+        case "Leader":
+            System.out.println(this.nom + " utilise la compétence Leader");
+            this.perdrePA(2);
+            for (Joueur joueur : joueurs) {
+                if (joueur.salle.getnomSalle().equals(this.salle.getnomSalle())) {
+                    joueur.PMO = joueur.PMO + 2;
+                }
+            }
+            break;
+        case "Concepteur":
+            System.out.println(this.nom + " utilise la compétence Concepteur");
+            for (int jour = 1; jour <= 30 ;jour++){
+                this.PA = this.PA + 2;
+            }
+            break;
+        case "Optimiste":
+            System.out.println(this.nom + " utilise la compétence Optimiste");
+            for (int jour = 1; jour <= 30; jour++){
+                this.PMO -= this.PMO;
+            }
+            break;
+        case "Technicien":
+            System.out.println(this.nom + " utilise la compétence Technicien");
+            break;
+        case "Mycologiste":
+            System.out.println(this.nom + " a utilisé la compétence Mycologiste");
+        default:
+            System.out.println("Compétence inconnue.");
+            break;
     }
+}
+public void tirer(Joueur cible) {
+    cible.perdrePV(4);
+}
+  public void attaqueMainNue(Joueur cible) {
+        if (this.PA >= 2) {
+            this.perdrePA(2);
+            cible.perdrePV(1);
+            System.out.println(this.nom + " a attaqué " + cible.getNom() + " à main nue. " + cible.getNom() + " perd 1 PV.");
+        } else {
+            System.out.println(this.nom + " : PA insuffisant");
+        }
+    }
+  
+  public class Action {
+   public void CarresserChat(Joueur j){
+         for(Objets o :this.inventaire){if(o.getNom().equals("chat de schrödinger")){
+             j.perdrePA(1);
+         }else{ j.perdrePA(0);}
+     }}
+  
+  
+  
+  
+  }
     /*  Si un joueur consomme
 une ration standard, il récupère 2 PA mais perd 1 PMO (point de moral -> voir page 3). S’il
 consomme une ration cuisinée, il récupère 4 PA et 3 PMO. Une fois la ration consommée, il
