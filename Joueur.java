@@ -1,11 +1,14 @@
+
+package projet;
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Test;
-
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  *
@@ -24,11 +27,13 @@ public class Joueur {
     private Salle salle;
     private int vaisseau;
     private boolean spore;
-    private ArrayList<String> inventaire = new ArrayList<>();
+    private Objets[] inventaire = new Objets [3];
     private String talkie_walkie= sc.nextLine() ;
     private ArrayList<String> canalHumain;
     private ArrayList<String> canalMush;
-    
+    private String salleActuelle;
+    private ArrayList<String> historiqueDeplacement;
+    private boolean propre;// permet de dire si le joueur est propre ou pas 
     public Joueur(String nom, int PV, int PA, int PM, int PMO, boolean estMush, String[] competence) {
         this.nom = nom;
         this.PV = PV;
@@ -112,11 +117,14 @@ messages de ce canal dans la console. la gestion de la communication entre les j
     public void perdrePM(int points) {
         this.PM -= points;
     }
-    public void utiliserCompetence(String nomCompetence, Joueur cible, ArrayList<Joueur> joueurs) {
+    public void utiliserCompetence(String nomCompetence, Joueur cible, ArrayList<Joueur> joueurs, Salle s) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choissez le nombre de jours");
+        int n = scanner.nextInt();
     switch (nomCompetence) {
         case "Tireur":
-            for(int jour = 1; jour <= 30;jour++){
-                if (this.inventaire.contains("blaster")) {
+            for(int jour = 1; jour <= n;jour++){
+                if (this.objetDansInventaire(new Objets("blaster"))) {
                     System.out.println(this.nom + " utilise la compétence Tireur.");
                     tirer(cible);
                     tirer(cible);
@@ -139,7 +147,7 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Infirmier":
             System.out.println(this.nom + " utilise la compétence Infirmier.");
-            for(int jour = 1; jour <= 30; jour++){
+            for(int jour = 1; jour <= n; jour++){
                 for(Joueur joueur : joueurs){
                     joueur.recupererPV(4);
                 }
@@ -159,15 +167,18 @@ messages de ce canal dans la console. la gestion de la communication entre les j
         case "Astrophysicien":
             System.out.println(this.nom + " utilise la compétence Astrophysicien.");
             this.ScannerPlanete();
-            this.PA += this.PA;
+            this.recupererPA(1);
             System.out.println("Vous avez découvert un secteur de plus");
             break;
             case "Paranoïaque":
             System.out.println(this.nom + " utilise la compétence Paranoïaque.");
-            
+            Objets camera = new Objets("caméra");
+            this.ajouterObjet(camera);
+            this.ajouterObjet(camera);
             break;
         case "Pilote":
             System.out.println(this.nom + " utilise la compétence Pilote.");
+            
             break;
         case "Robuste":
             System.out.println(this.nom + " utilise la compétence Robuste.");
@@ -176,6 +187,10 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             break;
         case "Physicien":
             System.out.println(this.nom + " utilise la compétence Physicien.");
+            for(int jour = 1; jour <= n; jour++){
+                this.reparerPilgred(s);
+                this.recupererPA(3);
+            }
             break;
         case "Détaché":
             System.out.println(this.nom + " utilise la compétence Détaché.");
@@ -183,36 +198,37 @@ messages de ce canal dans la console. la gestion de la communication entre les j
         case "Sprinter":
             System.out.println(this.nom + " utilise la compétence Sprinter.");
             this.conversionPA_PM();
-            this.PM = this.PM + 2;
+            this.recupererPM(2);
             break;
         case "Psy":
             System.out.println(this.nom + " utilise la compétence Psy");
             cible.perdrePA(1);
-            cible.PMO = cible.PMO + 2;
+            cible.recupererPMO(2);
         case "Leader":
             System.out.println(this.nom + " utilise la compétence Leader");
             this.perdrePA(2);
             for (Joueur joueur : joueurs) {
                 if (joueur.salle.getnomSalle().equals(this.salle.getnomSalle())) {
-                    joueur.PMO = joueur.PMO + 2;
+                    joueur.recupererPMO(2);
                 }
             }
             break;
         case "Concepteur":
             System.out.println(this.nom + " utilise la compétence Concepteur");
-            for (int jour = 1; jour <= 30 ;jour++){
-                this.PA = this.PA + 2;
+            for (int jour = 1; jour <= n ;jour++){
+                this.recupererPA(2);
             }
             break;
         case "Optimiste":
             System.out.println(this.nom + " utilise la compétence Optimiste");
-            for (int jour = 1; jour <= 30; jour++){
-                this.PMO -= this.PMO;
+            for (int jour = 1; jour <= n; jour++){
+                this.perdrePMO(1);
             }
             break;
         case "Technicien":
             System.out.println(this.nom + " utilise la compétence Technicien");
-            
+            Reparer(this);
+            this.recupererPA(1);
             break;
         case "Mycologiste":
             System.out.println(this.nom + " a utilisé la compétence Mycologiste");
@@ -247,10 +263,28 @@ public void tirer(Joueur cible) {
             this.perdrePM(1);
         }
     }
+      public ArrayList<String> getHistorique(){ return this.historiqueDeplacement;}
+ public  Objets[] getInventaire(){ return this.inventaire;}
+ 
+ public boolean getpropre(){ return this.propre;}
+    public void propre(){ this.propre=true;} // le joueur est propre avec cette methode 
+    public void ajouterObjet(Objets obj){for(int i=0;i<this.inventaire.length;i++){if(this.inventaire[i]==null){
+       if(obj!=null){this.inventaire[i]=obj;
+       return;}
+       else{System.out.println("Objet à ajouter est null ");}
+   }
+   else {System.out.println("impossible d'ajouter l'objet");}}}
     public String toString(){
         return this.getNom()+ " dans la salle " + this.salle.getnomSalle();
     }
-
+    public boolean objetDansInventaire(Objets objet) {
+        for (Objets obj : inventaire) {
+            if (obj != null && obj.equals(objet)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void gererPMO() {
         if (PMO <= 0) {
             PV--;
@@ -293,9 +327,7 @@ spore ».*/
     public void setCompetences(String[] competences) {
         this.competence = competences;
     }
-    public ArrayList<String> getInventaire() {
-        return inventaire;
-    }
+    public Salle getSalle(){ return this.salle;}
     public int  getNumsalle(){
         return this.salle.getID();
     }
@@ -325,12 +357,18 @@ spore ».*/
     
     
     public void recupererPM(int points) { // quand le joueur perd des PO
-                if (this.PM>12){System.out.println("le nombre maxiamum de PM est de 12");}
+        if (this.PM>12){System.out.println("le nombre maxiamum de PM est de 12");}
         else{
         this.PM += points;}
     }
     
-    
+    public void perdrePMO(int points){
+        if(this.PMO < 0){
+            System.out.println("le nombre minimum de PMO est de 0");
+        } else {
+            this.PMO = this.PMO - points;
+        }
+    }
       public void gestionDesPoints(){// cette methode permet de calculer les PA PM PMO PV  a chaque nouvel cycle
           for (int cycle=1;cycle<=8;cycle++){
           this.recupererPA(1); //A chaque cycle, chaque joueur récupère 1 PA
@@ -341,9 +379,7 @@ spore ».*/
         }
           }
      
-      }
-      
-      
+      }     
       public void conversionPA_PM(){if(this.PM==0){this.recupererPA(1);
        this.recupererPM(2);//Si un joueur est à court de PM, il peut utiliser 1 PA pour récupérer 2 PM.
       }}
@@ -355,7 +391,7 @@ spore ».*/
         
     }*/
        public void CarresserChat(Joueur j){
-         if(j.getInventaire().contains("chat de schrödinger")){
+         if(j.objetDansInventaire(new Objets("chat de schrödinger"))){
              j.perdrePA(1);
          }else{ j.perdrePA(0);}
      }
@@ -366,23 +402,39 @@ spore ».*/
         if(s.getnomSalle().equals("Dortoire")){
             j.perdrePA(0);
         } else{ System.out.println("Vous ne pouvez pas dormir ici");}
-    }
-    
+    }   
     public void SeLever(Joueur j, Salle s){
         j.perdrePA(0);
-    }
-    
-    
-    public void Réparer(Joueur j){
+    }    
+    public void Reparer(Joueur j){
         String rep="Oui";
         System.out.println("Voulez-vous reparer cette equiepement ?");
         if(rep.equals("Oui")){ j.perdrePA(1);}
     }
-    
-    public void ReparerPilgred(Salle s, Joueur j){
-        if(s.getnomSalle().equals("Moteurs")){
-            j.perdrePA(3);
+     public void lencerExpedition(Salle s , boolean planetOrb ){
+       if(planetOrb){ // pour verifier si la planete est en orbitre
+            if(s.getnomSalle().equals("Baie Icarus") && this.competence.equals("pilote")&&this.PA>=2){
+            System.out.println("lencez l'expedition depuis la bai_Iacurus");
+            this.perdrePA(3);
         }
+       }
+       else{
+       System.out.println("la planete n'est pas en orbite");
+       }
+    }
+     public void reparerPilgred(Salle s){
+     if(this.PA>=3 && s.getnomSalle().equals("Salles des moteurs")){ //si le j est dans la salle des moteurs et a assez de pa
+         
+        int random = (int)(Math.random()*100);
+        if(random >=10){//verifier si la tentative de reparer le pilgred est <= 10
+        System.out.println("vous avez la chance de reparer le pilgred");}
+         this.perdrePA(3);
+     
+      }
+     else{
+         System.out.println("vous n'etes pas dans la salle des moteurs");
+     }
+    
     }
     
     public void Sedoucher(Joueur j){
@@ -401,8 +453,32 @@ spore ».*/
         if(s.getnomSalle().equals("Laboratoire")){ j.perdrePA(2);}
     }
     
-    public void ChangerDeSalle(Joueur j, Salle s, Salle n){
-        if(s.estVoisineDe(n)){ j.perdrePA(1);}
+    // le joueur terminer son tour
+     public void termineTour(){
+         if(this.getPA()==0 && this.getPM()==0){
+         System.out.println("vous avez fini votre tour ");} 
+         else{
+             System.out.println("vous avez toojours de point d'action ou de mouvement ,");
+             }
+     }
+       
+     // changer salle 
+     public void changeSalle(Salle s,Joueur j){ // s : la salle dont le j veut changer
+         if(this.getPM()>=1){
+          if(s.getSalleVoisines().contains(j)){
+          s.ajouterJoueur(j);// ajoute le j dans la nouvelle salle
+          this.perdrePM(1);}
+          else{ System.out.println("vous avez chnger de salle"+s); }
+        }
+         else{ System.out.println("vous avez pas assezde PM pour chnger de salle ");}
+     }
+       // methode detecter la planete à proximité
+     public void detecterPlanetProximite(){
+         if(this.salle.getnomSalle().equals("pont")&& this.PA>=2){ // on va verifier d'abord si le joueur est au pont et a suffisement de pa
+             
+    
+     }
+     
     }
     
     public void Attaquer(Joueur joueur, Joueur joueurcible){
@@ -413,7 +489,7 @@ spore ».*/
     }
      
      public void AttaqueCouteau(Joueur j, Joueur cible){
-         if(j.inventaire.contains("Couteau")){
+         if(j.objetDansInventaire(new Objets("Couteau"))){
              cible.perdrePV(2);
          }/*Le joueur qui s'est fait attaquer perd 2PV*/
      }
@@ -453,7 +529,7 @@ spore ».*/
     public void MangerSpore(Joueur j){ j.perdrePA(1); j.recupererPA(3); j.recupererPM(2);}
     
     public void Tirer(Joueur j, Joueur cible){
-        if(j.inventaire.contains("Blaster")){
+        if(j.objetDansInventaire(new Objets("Blaster"))){
              cible.perdrePA(4);
         }/* Si le joueur utilise un couteau ou un blaster il perd un pa*/
     }
@@ -542,62 +618,18 @@ spore ».*/
     }
     public int getNombreJoueurs() {
     int nombreJoueurs = 0;
-    for(Joueur joueur : this.salle.getlisteJoueur()) {
+    for (Joueur joueur : this.salle.getlisteJoueur()) {
         if (!joueur.equals(this)) {
             nombreJoueurs++;
         }
     }
     return nombreJoueurs;
 }
-    
-    
-    public void lencerExpedition(Salle s , boolean planetOrb ){
-       if(this.planetOrb){ // pour verifier si la planete est en orbitre
-            if(s.getnomSalle().equals("Baie Icarus") && this.competence.equals("pilote")&&this.PA>=2){
-            System.out.println("lencez l'expedition depuis la bai_Iacurus");
-            this.perdrePA(3);
-        }
-       }
-       else{
-       System.out.println("la planete n'est pas en orbite");
-       }
+    // obtnir pour la salle actuelle du joueur
+    public String getSalleActuelle() {
+        return salleActuelle;
     }
-    
-    public void reparerPilgred(Salle s){
-     if(this.PA>=3 && s.getNomsalle().equals("Salles des moteurs")){ //si le j est dans la salle des moteurs et a assez de pa
-         
-        int random = (int)(Math.random()*100);
-        if(random >=10){//verifier si la tentative de reparer le pilgred est <= 10
-        System.out.println("vous avez la chance de reparer le pilgred");}
-         this.perdrePA(3);
-     
-      }
-     else{
-         System.out.println("vous n'etes pas dans la salle des moteurs");
-     }
-    
+    public void setSalleActuelle(String salleActuelle) {
+        this.salleActuelle = salleActuelle;
     }
-     /*j'ai mis en paramettre objet pour voir si le joueur est dans une tourelle avec l'objet jet d'attaque */
-       public void attaquerVaisseau(Salle s ,Objet objet){
-           if(s.getNomsalle.equals("Tourelle")&& objet.equals("jet d'attaque")) {
-               System.out.println("Attaque le vaisseau");
-               this.perdrePA(1);
-           }         
-           }
-       
-    public void rentrerSurTer( Salle s){
-   
-        if(s.getnomSalle().equals("pont")&& this.competence.equals("pilote") ){
-            System.out.println("vous pouvez entrer sur terre");
-        this.perdrePA(5);
-        }
-        
-    }
-     public void detecterPlanetProximite(){
-         if(this.salle.getnomSalle().equals("pont")&& this.PA>=2){ // on va verifier d'abord si le joueur est au pont et a suffisement de pa
-
-     } 
-    }
-     
 }
-
