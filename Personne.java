@@ -5,7 +5,6 @@
 package Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -13,34 +12,31 @@ import java.util.Scanner;
  * @author Utilisateur
  */
 public class Personne {
-     Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
     private String nom;
     private int PV;
     private int PA;
     private int PM;
     private int PMO;
     private boolean estMush;
-    private Competence competence1;
-    private Competence competence2;
+    private int nbrSpore;
+    private String[] competence;
     private Salle salle;
     private int vaisseau;
+    private boolean spore;
     private ArrayList<String> inventaire = new ArrayList<>();
     private String talkie_walkie= sc.nextLine() ;
     private ArrayList<String> canalHumain;
     private ArrayList<String> canalMush;
-    private Personne s;
-   // private boolean c;
     
-    
-    public Personne(String nom, int PV, int PA, int PM, int PMO, boolean estMush, Competence competence1, Competence competence2) {
+    public Personne(String nom, int PV, int PA, int PM, int PMO, boolean estMush, String[] competence) {
         this.nom = nom;
         this.PV = PV;
         this.PA = PA;
         this.PM = PM;
         this.PMO = PMO;
         this.estMush = estMush;
-        this.competence1 = competence1;
-        this.competence2 = competence2;
+        this.competence = competence;
     }
     public Personne(String name,Salle s,int vaisseau){
         this.nom=name;
@@ -104,41 +100,147 @@ messages de ce canal dans la console. la gestion de la communication entre les j
             System.out.println(this.nom + " : PA insuffisant");
         }
     }
-    
-   
     public void perdrePV(int points) {
         this.PV -= points;
         if (this.PV <= 0) {
             System.out.println(this.nom + " est mort");
         }
     }
-    // le j peut convertir ses pa en pm afin de se deplacr dans le vaisseau
-    /*public void ajouterPM(int points){ // 
-    this.PM+= points;
-    }*/
-
-   
     public void perdrePA(int points) {
         this.PA -= points;
-    }
-    public void gagnerPMO(int points) {
-        this.PMO += points;
     }
     public void perdrePM(int points) {
         this.PM -= points;
     }
-    public void utiliserCompetence(Competence competence, Personne cible) {
-        if (this.PA > 0) {
-            if (this.competence1.equals(competence) || this.competence2.equals(competence)) {
-                this.perdrePA(1);
-                System.out.println(this.nom + " la compétence " + competence.getNom() + "a été utilisé sur le joueur " + cible.getNom());
-            } else {
-                System.out.println(this.nom + " pas de compétence " + competence.getNom());
+    public void utiliserCompetence(String nomCompetence, Personne cible, ArrayList<Personne> joueurs) {
+    switch (nomCompetence) {
+        case "Tireur":
+            for(int jour = 1; jour <= 30;jour++){
+                if (this.inventaire.contains("blaster")) {
+                    System.out.println(this.nom + " utilise la compétence Tireur.");
+                    tirer(cible);
+                    tirer(cible);
+                } else {
+                    System.out.println("Pour utiliser la compétence Tireur, vous devez avoir une arme dans votre inventaire.");
+                }
             }
-        } else {
-            System.out.println(this.nom + " : PA insuffisant");
-        }
+            break;
+        case "Bourreau":
+            if (this.PA >= 1) {
+                this.perdrePA(1);
+                cible.perdrePV(1);
+                System.out.println(this.nom + " utilise la compétence Bourreau.");
+                
+            } else {
+                System.out.println(this.nom + " : PA insuffisant");
+            }
+            break;
+        case "Seul espoir":
+            break;
+        case "Infirmier":
+            System.out.println(this.nom + " utilise la compétence Infirmier.");
+            for(int jour = 1; jour <= 30; jour++){
+                for(Personne joueur : joueurs){
+                    joueur.recupererPV(4);
+                }
+            }
+            break;
+        case "Traqueur":
+            System.out.println(this.nom + " utilise la compétence Traqueur.");
+            
+            break;
+        case "Observateur":
+            System.out.println(this.nom + " utilise la compétence Observateur.");
+            break;
+        case "Biologiste":
+            System.out.println(this.nom + " utilise la compétence Biologiste.");
+            
+            break;
+        case "Astrophysicien":
+            System.out.println(this.nom + " utilise la compétence Astrophysicien.");
+            this.ScannerPlanete();
+            this.PA += this.PA;
+            System.out.println("Vous avez découvert un secteur de plus");
+            break;
+            case "Paranoïaque":
+            System.out.println(this.nom + " utilise la compétence Paranoïaque.");
+            
+            break;
+        case "Pilote":
+            System.out.println(this.nom + " utilise la compétence Pilote.");
+            break;
+        case "Robuste":
+            System.out.println(this.nom + " utilise la compétence Robuste.");
+            attaqueMainNue(cible);
+            cible.perdrePV(1);
+            break;
+        case "Physicien":
+            System.out.println(this.nom + " utilise la compétence Physicien.");
+            break;
+        case "Détaché":
+            System.out.println(this.nom + " utilise la compétence Détaché.");
+            break;
+        case "Sprinter":
+            System.out.println(this.nom + " utilise la compétence Sprinter.");
+            this.conversionPA_PM();
+            this.PM = this.PM + 2;
+            break;
+        case "Psy":
+            System.out.println(this.nom + " utilise la compétence Psy");
+            cible.perdrePA(1);
+            cible.PMO = cible.PMO + 2;
+        case "Leader":
+            System.out.println(this.nom + " utilise la compétence Leader");
+            this.perdrePA(2);
+            for (Personne joueur : joueurs) {
+                if (joueur.salle.getnomSalle().equals(this.salle.getnomSalle())) {
+                    joueur.PMO = joueur.PMO + 2;
+                }
+            }
+            break;
+        case "Concepteur":
+            System.out.println(this.nom + " utilise la compétence Concepteur");
+            for (int jour = 1; jour <= 30 ;jour++){
+                this.PA = this.PA + 2;
+            }
+            break;
+        case "Optimiste":
+            System.out.println(this.nom + " utilise la compétence Optimiste");
+            for (int jour = 1; jour <= 30; jour++){
+                this.PMO -= this.PMO;
+            }
+            break;
+        case "Technicien":
+            System.out.println(this.nom + " utilise la compétence Technicien");
+            
+            break;
+        case "Mycologiste":
+            System.out.println(this.nom + " a utilisé la compétence Mycologiste");
+            this.soignerEquipier(cible);
+            perdreSpore(1, cible);
+        default:
+            System.out.println("Compétence inconnue.");
+            break;
     }
+}
+public void soignerEquipier(Personne cible) {
+    if (this.PA >= 2) {
+        this.perdrePA(2);
+        cible.recupererPV(4);
+        System.out.println(this.nom + " soigne " + cible.getNom() + ".");
+    } else {
+        System.out.println(this.nom + " : PA insuffisant");
+    }
+}
+public void perdreSpore(int point,Personne cible){
+    int nombreSpore = 0;
+    if (cible.estMush()) {
+            nombreSpore = nombreSpore - point;
+        }
+}
+public void tirer(Personne cible) {
+    cible.perdrePV(4);
+}
     public void Deplacer(Salle salleDestination) {
         if (salleDestination.estVoisineDe(this.salle)) {
             this.salle = salleDestination;
@@ -157,151 +259,7 @@ messages de ce canal dans la console. la gestion de la communication entre les j
     public String getNom() {
         return nom;
     }
-      
-    /*public void depotObjet(Objet objets){
-        if(this.inventaire.contains("objets")){
-            Syteme.out.println("depose"+ )
-        }*/
-
-    /* la methode se doucher , on va verifier si le joueur a 2 ou plus de pa est mush
-    il va prendre une douche et perdre perdre 3pv sinon prendre une douche */
-    public void seDoucher(){
-        if(this.PA>=2){
-     if(this.estMush){
-      System.out.println(this.nom+"prend une douche et perd 3pv");
-     this.perdrePV(3);
-     }
-     else
-    System.out.println(this.nom+"vous pouvez prendre une douche");
-    }   
-    }
-     // faire une recherche dans le laboratoire
-     public void recherLabo(Personne joueur){ // methode pour faire une recherche dans la salle 
-     if(joueur.getPA() >=2){
-        this.perdrePA(2);
-         System.out.println(this.nom +"fait une recherche");
-     }
-     else{
-           System.out.println(this.nom+"PA insuffisant pour faire une recherche");           
-    }
-       
-    }
-     
-      public void utiliserTortinette(){ // utiliser la tortinette pour se deplacer
-        if(this.PA>=2){
-            this.perdrePA(2);
-            this.PM+=2;
-        } else{
-        System.out.println(this.nom + "tu ne peux pas utiliser la tortinette");
-        }
-    }   
-        //methode prendre un objet
-      public void prendreObjet(Personne joueur , Objet objet , Salle salle){/* verifie si l'objet choisi est que veut prendre le joueur 
-          est disponible dans dans l'espace de stockage*/
-          if(salle.getStockage().contains("objet"){
-          inventaire.add(objet);
-          salle.getStockage().remove(objet);
-          System.out.println("prend un "+objet+"dans l'unité de stockaege");}
-          else{
-          
-          System.out.println("l'objet n'est pas disponible dans l'unité de stockage de la salle ");}
-      }
-
-      
-      // methode scanner
-     public void ScannerPlanete(){
-        if(this.salle.getnomSalle().equals("pont")&& this.PA>=3){// on verifie si le j es sur le pont et a assez de pa;
-            
-              
-              int s = (int)(Math.random()*3); //random , ici on choisi 1 secteur de la planete à scanner de façon aleatoir
-              int qtiteDeRessource = (int) (Math.random()*26);//e la quantité de ressources disponibles dans un des secteurs non scaner et choisi aleatoirement 
-                switch(s){
-                   case  1: 
-                     System.out.println("scane oxygne"+qtiteDeRessource+"unité");
-                   break;
-                   case  2 : 
-                     System.out.println("scane fuel"+qtiteDeRessource+"unité");
-                   break;
-                   case  3 : 
-                     System.out.println("scane débris métallique"+qtiteDeRessource+"unité");
-                   break;
-        }
-          this.perdrePA(3);//le joueur perd alors 3pa
-    }
-     }
-    
-     //methode fouiller dans l'unité de stockage
-     public void fouillerUniteStokage(Salle s){
-    //on va verifier si le j est present dans la salle et a de pa suffisantes pour fouiller 
-     if(s.presenceJoueur(this.s)&&this.PA>=2){
-        this.perdrePA(2);
-        
-        for(Objet Objet : salle.getStockage()){ // on va parcourir l'unité de stockage de la salle
-            boolean objetCache = false; // j'ai initialisé objetCache est faux s'il es pas cacher , 
-            if(objetCache = true){
-            System.out.printltn("affiche l'objet caché"+objet.getNom);}//pour l'afficher
-        }
-     }
-     else{
-          System.out.println("vous devez etre present dans la salle et avoirassez de pa pour pouvoir fouiler");
-        }
-       this.perdrePA(2);
-
-}     
-     //methode carresser le chat
-    public void carresserChat(){
-     if(inventaire.contains("chat de schrödinger")){
-      this.perdrePA(1);
-      if(Math.random()<0.5){  //  le j peut etre contaminé par 1spore / a une chance d'etre contaminer par une spore lorsqu'il carresse le chat
-      System.out.println("vous etes contaminé par un mush");
-       this.gagnerPMO(1);
-       }
-    }
-     else{
-         System.out.println("le chat n'est pas dans l'inventaire vous ne pouvez pas le carresser ");
-     }    
-    }
-    
-     // le joueur terminer son tour
-     public void termineTour(){
-         if(this.getPA()==0 && this.getPM()==0){
-         System.out.println("vous avez fini votre tour ");} 
-         else{
-             System.out.println("vous avez toojours de point d'action ou de mouvement ,");
-             }
-     }
-       
-     // changer salle 
-     public void changeSalle(Salle s){ // s : la salle dont le j veut changer
-         if(this.getPM()>=1){
-          if(s.salle.getSalleVoisines(s)){
-          s.ajouterJoueur(s);// ajoute le j dans la nouvelle salle
-          this.perdrePM(1);}
-          else{ System.out.println("vous avez chnger de salle"+s); }
-        }
-         else{ System.out.println("vous avez pas assezde PM pour chnger de salle ");}
-     }
-       // methode detecter la planete à proximité
-     public void detecterPlanetProximite(){
-         if(this.salle.getnomSalle().equals("pont")&& this.PA>=2){ // on va verifier d'abord si le joueur est au pont et a suffisement de pa
-             
-    
-     }
-     
-    }
-     // pour Eleesha 
-      public void consulterEntreeSortie(){
-     
-                                          }
-      /*se coucher 
-     public void seCoucher(){}*/
-    
-    /*public void creerSpores(){//verifie d'abord si lejoueur est  mush et est seul dans la salle , il perd 2pa et devient sale
-        if(this.estMush) &&(!this.estMush).prenceJoueur(this.salle){
-        this.perdrePA(2);
-    */
- 
-    //À tout moment, chaque joueur sait combien il y a de mushs vivants à bord.
+//À tout moment, chaque joueur sait combien il y a de mushs vivants à bord.
     /* Vous pouvez soit détruire
 le Daedalus en sabotant les équipements et en mettant des bâtons dans les roues des humains,
 soit transformer les humains en mush. Vous pouvez pour cela créer des spores et poinçonner
@@ -310,8 +268,6 @@ mush ne peut poinçonner qu’une seule fois par jour. Attention aux caméras pr
 certaines pièces qui peuvent détecter les actions « Créer une spore » et « Poinçonner une
 spore ».*/
 
-   
-   
     public int getPV() {
         return PV;
     }
@@ -331,26 +287,312 @@ spore ».*/
     public boolean estMush() {
         return estMush;
     }
-    
-     public Competence getCompetence1() {
-        return competence1;
+    public String[] getCompetences(){
+        return competence;
     }
-
-    public Competence getCompetence2() {
-        return competence2;
+    public void setCompetences(String[] competences) {
+        this.competence = competences;
     }
     public ArrayList<String> getInventaire() {
         return inventaire;
     }
     public int  getNumsalle(){
         return this.salle.getID();
-    } 
-
+    }
+    public void recupererPV(int points) {  // quand le joueur perd des PV 
+        
+        if (this.PV >14) {
+            System.out.println("le nombre maximum de PV est de 14");
+        }
+        else {this.PV += points;}
+    }
+      
+      
+         public void recupererPMO(int points) {  // quand le joueur perd des PV 
+        
+        if (this.PMO >14) {
+            System.out.println("le nombre maximum de PMO est de 14");
+        }
+        else {this.PMO += points;}
+    }
+         
+         
+    public void recupererPA(int points) {  // quand le joueur perd des PA
+        if (this.PA>12){System.out.println("le nombre maxiamum de PA est de 12");}
+        else{
+        this.PA += points;}
+    }
+    
+    
+    public void recupererPM(int points) { // quand le joueur perd des PO
+                if (this.PM>12){System.out.println("le nombre maxiamum de PM est de 12");}
+        else{
+        this.PM += points;}
+    }
+    
+    
+      public void gestionDesPoints(){// cette methode permet de calculer les PA PM PMO PV  a chaque nouvel cycle
+          for (int cycle=1;cycle<=8;cycle++){
+          this.recupererPA(1); //A chaque cycle, chaque joueur récupère 1 PA
+          this.recupererPM(1); //A chaque cycle, chaque joueur récupère 1 PM.
+          while(this.PMO==0){this.perdrePV(1);}//Si le nombre de PMO tombe à zéro, le joueur perd 1 PV par cycle tant qu’il a 0 PMO
+           if (this.PV <= 0) {
+            System.out.println(this.nom + " est mort"); //Si le nombre de PV tombe à zéro, le joueur meurt.
+        }
+          }
+     
+      }
+      
+      
+      public void conversionPA_PM(){if(this.PM==0){this.recupererPA(1);
+       this.recupererPM(2);//Si un joueur est à court de PM, il peut utiliser 1 PA pour récupérer 2 PM.
+      }}
+  /*  public String  destination(){
+        String texte ;
+        System.out.println("Ou voudriez-vous aller?");
+        texte= sc.nextLine();
+        return texte;
+        
+    }*/
+       public void CarresserChat(Personne j){
+         if(j.getInventaire().contains("chat de schrödinger")){
+             j.perdrePA(1);
+         }else{ j.perdrePA(0);}
+     }
+    
+     public void Fouiller(Personne j){}
+    
+    public void SeCoucher(Personne j, Salle s){
+        if(s.getnomSalle().equals("Dortoire")){
+            j.perdrePA(0);
+        } else{ System.out.println("Vous ne pouvez pas dormir ici");}
+    }
+    
+    public void SeLever(Personne j, Salle s){
+        j.perdrePA(0);
+    }
+    
+    
+    public void Réparer(Personne j){
+        String rep="Oui";
+        System.out.println("Voulez-vous reparer cette equiepement ?");
+        if(rep.equals("Oui")){ j.perdrePA(1);}
+    }
+    
+    public void ReparerPilgred( Personne j){
+        if(j.getnomSalle().equals("Moteurs")){
+            j.perdrePA(3);
+        }
+    }
+    
+    public void Sedoucher(Personne j){
+        if(j.estMush){ j.perdrePA(2); j.perdrePV(3);}
+        else{ j.perdrePA(2);}
+    }
+    
+    public void MettreCam(Personne j, Salle s){
+        System.out.println("Voulez-vous mettre cette salle sous surveillance ?");
+        String rep="Oui";
+        if(rep.equals("Oui")){ j.perdrePA(4);}
+        else{ j.perdrePA(0);}
+    }
+    
+    public void RechercheLabo(Personne j, Salle s){
+        if(s.getnomSalle().equals("Laboratoire")){ j.perdrePA(2);}
+    }
+    
+    public void ChangerDeSalle(Personne j, Salle s, Salle n){
+        if(s.estVoisineDe(n)){ j.perdrePA(1);}
+    }
+    
+    public void Attaquer(Personne joueur, Personne joueurcible){
+         if(this.PA>2){
+             joueur.perdrePA(2);
+             joueurcible.perdrePV(1);
+         }/* Si un joueur attauqe un autre joueur a main nu le joueur perd 2PA et l'autre un pv*/
+    }
+     
+     public void AttaqueCouteau(Personne j, Personne cible){
+         if(j.inventaire.contains("Couteau")){
+             cible.perdrePV(2);
+         }/*Le joueur qui s'est fait attaquer perd 2PV*/
+     }
+    
+     public void ScannerPlanet(Salle s, Personne j){
+         if(s.getnomSalle().equals("Pont")){
+             j.perdrePA(2);
+         }
+     }
+    
+     public void CreerSpore(Personne j,Salle s){
+         int nbr=0;
+        if (this.estMush() && this.salle.getNombreJoueurs() == 1) {
+        this.spore = true;
+        nbr += nbr;
+        System.out.println(this.nom + " a créé un spore.");
+    } else {
+        System.out.println("Conditions non remplies pour créer un spore.");
+    }
+    }
+    
+     public void Poinçonner(Personne ciblej){
+        if(!ciblej.estMush && this.nbrSpore>0){
+            ciblej.RecevoirSpore();
+             /*il créé un spore*/
+            System.out.println("Vous avez poiçonner le joueur"+ ciblej);
+        } if(this.nbrSpore==0){System.out.println("Vous n'avez plus de spore");}
+    }
+    
+    private void RecevoirSpore(){ }
+    
+    public void InfecterRation(Personne j){
+        if(j.estMush){
+        j.perdrePA(1);}
+    }
+    
+    public void MangerSpore(Personne j){ j.perdrePA(1); j.recupererPA(3); j.recupererPM(2);}
+    
+    public void Tirer(Personne j, Personne cible){
+        if(j.inventaire.contains("Blaster")){
+             cible.perdrePA(4);
+        }/* Si le joueur utilise un couteau ou un blaster il perd un pa*/
+    }
+    public void Cacher(Personne j){
+        System.out.println("Voulez-vous cacher cette objet");
+        String rep="Oui";
+        if(rep.equals("Oui")){
+            j.perdrePA(1);
+            System.out.println("Vous avez cacher l'objet");
+        }
+    }
+    public void PrendreObjet(Personne j){
+        System.out.println("Voulez_vous prendre cette objet");
+        String rep="Oui";
+        if(rep.equals("Oui")){
+            j.perdrePA(0);
+            System.out.println("Vous avez pris l'objet il se trouve maintenant dans votre inventaire");
+        }
+    }
+    public void Fouiller(Personne j, Salle s){
+        if(presenceJoueur(j)){j.perdrePA(2);}
+    }
+    
+    public void VoirObjetCacher(Personne j, Salle s){
+        if(j.presenceJoueur(j)){j.perdrePA(0);}
+    }
+      public void Saboter(int PA, Personne joueur){
+        System.out.println("Voulez-vous saboter cette équipement");
+        joueur.perdrePA(0);
+        String rep="Oui";
+        if( joueur.estMush){
+            if(rep.equals("Oui")){
+                joueur.perdrePA(3);
+                System.out.println("Equipement saboter");
+            }
+        }    
+    }
+        
+    public void ConsulterJournaldeBoard(Personne j){
+        if(!this.estMush()){
+            
+        }
+        else{}
+    }
+    
+     public void eleesha(Personne joueur){
+         if(this.equals("Eleesha")){
+             System.out.println("Voulez vous consulter les entrées et sorties de cette salle");
+             String rep="Oui";
+             if(rep.equals("Oui")){
+                 joueur.perdrePA(1);
+             } else {}
+         }
+     }
+    public void AttaqueAllienne(Salle s, Personne j){
+        if(s.getnomSalle().equals("Tourelle")|| s.getnomSalle().equals("baie")){
+            j.perdrePA(1);
+        }
+        else{
+            System.out.println("Vous devez vous trouvez dans une salle ");
+        }
+        
+    }
+    public void ScannerPlanete(){
+        if(this.salle.getnomSalle().equals("pont")&& this.PA>=3){// on verifie si le j es sur le pont et a assez de pa;
+            
+              
+              int s = (int)(Math.random()*3); //random , ici on choisi 1 secteur de la planete à scanner de façon aleatoir
+              int qtiteDeRessource = (int) (Math.random()*26);//e la quantité de ressources disponibles dans un des secteurs non scaner et choisi aleatoirement 
+                switch(s){
+                   case  1: 
+                     System.out.println("scane oxygne"+qtiteDeRessource+"unité");
+                   break;
+                   case  2 : 
+                     System.out.println("scane fuel"+qtiteDeRessource+"unité");
+                   break;
+                   case  3 : 
+                     System.out.println("scane débris métallique"+qtiteDeRessource+"unité");
+                   break;
+        }
+          this.perdrePA(3);//le joueur perd alors 3pa
+    }
+     }
+    private boolean presenceJoueur(Personne j) {
+        return j.getNumsalle()==salle.getID();
+    }
+    public int getNombreJoueurs() {
+    int nombreJoueurs = 0;
+    for(Personne joueur : this.salle.getlisteJoueur()) {
+        if (!joueur.equals(this)) {
+            nombreJoueurs++;
+        }
+    }
+    return nombreJoueurs;
+}
+    
+    
+    public void lencerExpedition(Salle s , boolean planetOrb ){
+       if(this.planetOrb){ // pour verifier si la planete est en orbitre
+            if(s.getnomSalle().equals("Baie Icarus") && this.competence.equals("pilote")&&this.PA>=2){
+            System.out.println("lencez l'expedition depuis la bai_Iacurus");
+            this.perdrePA(3);
+        }
+       }
+       else{
+       System.out.println("la planete n'est pas en orbite");
+       }
+    }
+    
    
+     /*j'ai mis en paramettre objet pour voir si le joueur est dans une tourelle avec l'objet jet d'attaque */
+       public void attaquerVaisseau(Salle s ,Objet objet){
+           if(s.getNomsalle.equals("Tourelle")&& objet.equals("jet d'attaque")) {
+               System.out.println("Attaque le vaisseau");
+               this.perdrePA(1);
+           }         
+           }
+       
+    public void rentrerSurTer( Salle s){
+   
+        if(s.getnomSalle().equals("pont")&& this.competence.equals("pilote") ){
+            System.out.println("vous pouvez entrer sur terre");
+        this.perdrePA(5);
+        }
+        
+    }
+     public void detecterPlanetProximite(){
+         if(this.salle.getnomSalle().equals("pont")&& this.PA>=2){ // on va verifier d'abord si le joueur est au pont et a suffisement de pa
+
+     } 
+    }
+     // verifie si j qui transforme est un mush et que le j cible est humain
+     public void transformeEnMush(Personne cible){
+         if(!this.estMush() && cible.estMush){
+         cible.infercter();
+         System.out.println(this.nom+"a transformé" +cible+"en Mush");}
+         
+     }
+     
+     
 }
 
-   
-    
-    
-    
-    
